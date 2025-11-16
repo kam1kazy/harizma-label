@@ -1,5 +1,9 @@
-'use client';
+import { HeroSection } from '@/widgets/hero-section';
 
 export default function Home() {
-  return <div>Hello World</div>;
+  return (
+    <main>
+      <HeroSection />
+    </main>
+  );
 }

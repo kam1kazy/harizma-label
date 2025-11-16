@@ -1,9 +1,15 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
+  },
   turbopack: {
-    // Example: adding an alias and custom file extension
     resolveAlias: {
       underscore: 'lodash',
       '@': './src',
