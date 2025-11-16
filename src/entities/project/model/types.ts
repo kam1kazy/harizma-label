@@ -2,12 +2,11 @@ export type ProjectCategory = 'motion' | 'audio' | 'design';
 
 export type Project = {
   id: string;
-  title: string;
+  title: string; // track title
   category: ProjectCategory;
   cover: string;
-  editor: string;
-  director: string;
-  audio?: string;
+  artist: string;
+  audio?: string; // optional audio preview/source
   description: string;
 };
 

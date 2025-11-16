@@ -11,7 +11,7 @@ export function Pill({ active, className, children, ...rest }: PillProps) {
     <button
       type="button"
       className={clsx(
-        'relative overflow-hidden px-0 py-0 text-[11px] font-semibold uppercase tracking-[0.25em] text-white transition-colors duration-300',
+        'relative overflow-hidden px-2 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-white transition-colors duration-300',
         className
       )}
       {...rest}

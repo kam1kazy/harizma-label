@@ -1,65 +1,123 @@
-'use client';
+import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
+import useEmblaCarousel from 'embla-carousel-react';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { Project } from '@/entities/project';
-import { IconButton } from '@/shared/ui/icon-button';
-import { useMemo } from 'react';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { ProjectCard } from './project-card';
+import type { Project } from '@/entities/project/model/types';
+import type { CarouselProps, CarouselRenderArgs } from '../model/types';
+import '../style/embla.css';
+import { NextButton, PrevButton } from './arrow-buttons';
+import { LazyImage } from './lazy-image';
+import { usePrevNextButtons } from './use-prev-next-buttons';
 
-type CarouselProps = {
-  projects: Project[];
-  activeIndex: number;
-  onChange: (index: number) => void;
-};
+export function Carousel<TItem>(props: CarouselProps<TItem>) {
+  const {
+    items,
+    options,
+    renderSlide,
+    showArrows = true,
+    className,
+    onInit,
+    imageSize = { width: 450, height: 400 },
+  } = props;
 
-export function ProjectsCarousel({ projects, activeIndex, onChange }: CarouselProps) {
-  const hasProjects = projects.length > 0;
-  const safeIndex = hasProjects
-    ? ((activeIndex % projects.length) + projects.length) % projects.length
-    : 0;
+  const mergedOptions: EmblaOptionsType = useMemo(
+    () =>
+      ({
+        loop: true,
+        align: 'center' as const,
+        containScroll: 'trimSnaps' as const,
+        slidesToScroll: 1,
+        ...(options ?? {}),
+      }) as EmblaOptionsType,
+    [options]
+  );
 
-  const ordered = useMemo(() => {
-    if (!hasProjects) return [];
-    if (projects.length <= 3) {
-      return projects.map((project, index) => ({
-        project,
-        isActive: index === safeIndex,
-      }));
-    }
-    const len = projects.length;
-    const prevIndex = (safeIndex - 1 + len) % len;
-    const nextIndex = (safeIndex + 1) % len;
-    return [
-      { project: projects[prevIndex], isActive: false },
-      { project: projects[safeIndex], isActive: true },
-      { project: projects[nextIndex], isActive: false },
-    ];
-  }, [projects, safeIndex, hasProjects]);
+  const [viewportRef, emblaApi] = useEmblaCarousel(mergedOptions);
+  const [slidesInView, setSlidesInView] = useState<number[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const { prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick } =
+    usePrevNextButtons(emblaApi);
 
-  const next = () => {
-    if (!hasProjects) return;
-    onChange((safeIndex + 1) % projects.length);
-  };
-  const prev = () => {
-    if (!hasProjects) return;
-    onChange((safeIndex - 1 + projects.length) % projects.length);
-  };
+  const updateSlidesInView = useCallback((api: EmblaCarouselType) => {
+    setSlidesInView((prev) => {
+      if (prev.length === api.slideNodes().length) {
+        api.off('slidesInView', updateSlidesInView);
+      }
+      const inView = api.slidesInView().filter((i) => !prev.includes(i));
+      return prev.concat(inView);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onInit?.(emblaApi);
+    updateSlidesInView(emblaApi);
+    emblaApi.on('slidesInView', updateSlidesInView);
+    emblaApi.on('reInit', updateSlidesInView);
+
+    const updateSelected = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    updateSelected();
+    emblaApi.on('select', updateSelected).on('reInit', updateSelected);
+  }, [emblaApi, onInit, updateSlidesInView]);
+
+  const defaultProjectRenderer = useMemo(() => {
+    return (args: CarouselRenderArgs<unknown>) => {
+      const item = args.item as unknown as Project;
+      const isSelected = selectedIndex === (args.index as number);
+      return (
+        <div className="embla__slide">
+          <div
+            className={`embla__slide__wrapper${isSelected ? ' embla__slide__wrapper--selected' : ''}`}
+          >
+            <LazyImage
+              src={item.cover}
+              alt={item.title}
+              inView={args.inView}
+              width={imageSize.width}
+              height={imageSize.height}
+            />
+            <div className="embla__slide__overlay text-center">
+              <span className="embla__slide__name">{item.title}</span>
+            </div>
+          </div>
+        </div>
+      );
+    };
+  }, [imageSize.height, imageSize.width, selectedIndex]);
+
+  const renderer =
+    (renderSlide as (a: CarouselRenderArgs<TItem>) => ReactNode) ??
+    (defaultProjectRenderer as (a: CarouselRenderArgs<TItem>) => ReactNode);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-end gap-3">
-        <IconButton onClick={prev} disabled={!hasProjects}>
-          <FiChevronLeft size={18} />
-        </IconButton>
-        <IconButton onClick={next} disabled={!hasProjects}>
-          <FiChevronRight size={18} />
-        </IconButton>
+    <div className={`embla ${className ?? ''}`}>
+      <div className="embla__viewport" ref={viewportRef}>
+        <div className="embla__container">
+          {items.map((item, index) => {
+            const inView = slidesInView.indexOf(index) > -1;
+            return <>{renderer({ item, index, inView })}</>;
+          })}
+        </div>
       </div>
-      <div className="flex gap-6 overflow-x-auto pb-4">
-        {ordered.map(({ project, isActive }) => (
-          <ProjectCard key={project.id} project={project} active={isActive} />
-        ))}
-      </div>
+
+      {showArrows && (
+        <div className="embla__controls">
+          <div className="embla__buttons">
+            <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
+            <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+export type ProjectCarouselProps = Omit<CarouselProps<Project>, 'items' | 'renderSlide'> & {
+  projects: Project[];
+};
+
+export const ProjectCarousel: React.FC<ProjectCarouselProps> = (props) => {
+  const { projects, ...rest } = props;
+  return <Carousel<Project> items={projects} {...rest} />;
+};

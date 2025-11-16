@@ -1,0 +1,191 @@
+.embla {
+  margin: auto;
+  /* --slide-height: 19rem; */
+  --slide-spacing: 1rem;
+  --slide-size: 100%;
+  --slide-height: 650px;
+  position: relative;
+  --peek: 0px;
+}
+
+/* Планшеты (768px и выше) */
+@media (min-width: 768px) {
+  .embla {
+    /* Как в примере Embla (Loop): центральный слайд ~70% ширины, соседние обрезаны */
+    --slide-size: 70%;
+    --slide-height: 550px;
+    --peek: 0px;
+  }
+}
+
+.embla__viewport {
+  overflow: hidden;
+  padding: 0 var(--peek);
+  margin: 0 calc(var(--peek) * -1);
+}
+
+/* Большие экраны: увеличиваем высоту слайда для лучшей читаемости сцены */
+@media (min-width: 1280px) {
+  .embla {
+    --slide-height: 650px;
+  }
+}
+@media (min-width: 1536px) {
+  .embla {
+    --slide-height: 720px;
+  }
+}
+@media (min-width: 1920px) {
+  .embla {
+    --slide-height: 820px;
+  }
+}
+@media (min-width: 2560px) {
+  .embla {
+    --slide-height: 920px;
+  }
+}
+@media (min-width: 3200px) {
+  .embla {
+    --slide-height: 1000px;
+  }
+}
+.embla__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+.embla__slide {
+  transform: translate3d(0, 0, 0);
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+  height: var(--slide-height);
+}
+.embla__slide__wrapper {
+  position: relative;
+  height: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transform-origin: top center;
+  transform: scale(0.95);
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.embla__slide__wrapper--selected {
+  transform: scale(1);
+  z-index: 1;
+}
+.embla__slide__img {
+  display: block;
+  width: 100%;
+  height: var(--slide-height);
+  border-radius: 0.5rem;
+  object-fit: cover;
+  object-position: top;
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: grayscale(100%);
+}
+.embla__slide__overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem 1rem 1rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.embla__slide__name {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.embla__slide__wrapper--selected:hover .embla__slide__overlay {
+  opacity: 1;
+}
+.embla__slide__wrapper--selected:hover .embla__slide__img {
+  transform: scale(1.02);
+  filter: grayscale(0%);
+}
+.embla__controls {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none; /* чтобы клики проходили к viewport */
+}
+.embla__buttons {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.5rem;
+}
+.embla__button {
+  -webkit-tap-highlight-color: rgba(var(--text-high-contrast-rgb-value), 0.5);
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  touch-action: manipulation;
+  display: inline-flex;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  box-shadow: inset 0 0 0 0.12rem var(--detail-medium-contrast);
+  width: 2.8rem;
+  height: 2.8rem;
+  z-index: 2;
+  border-radius: 50%;
+  color: var(--text-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto; /* снова включаем клики на кнопках */
+}
+.embla__button:disabled {
+  color: var(--detail-high-contrast);
+}
+.embla__button__svg {
+  width: 35%;
+  height: 35%;
+}
+.embla__lazy-load {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+.embla__lazy-load__spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3rem;
+  height: 3rem;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  z-index: 2;
+}
+.embla__lazy-load__img {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.embla__lazy-load--has-loaded .embla__lazy-load__img {
+  opacity: 1;
+}
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

@@ -1,26 +1,13 @@
 'use client';
 
-import type { ProjectCategory } from '@/entities/project';
 import { projects } from '@/entities/project';
-import { ProjectsCarousel } from '@/features/project-carousel';
-import { FilterTabs } from '@/features/project-filter';
+import { PageAnchors } from '@/features/page-anchors';
+import { ProjectCarousel } from '@/features/project-carousel';
 import { IconButton } from '@/shared/ui/icon-button';
 import { SocialLinks } from '@/shared/ui/social-links';
-import { useEffect, useMemo, useState } from 'react';
 import { FiMenu } from 'react-icons/fi';
 
 export function HeroSection() {
-  const [filter, setFilter] = useState<'all' | ProjectCategory>('all');
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const filteredProjects = useMemo(() => {
-    return filter === 'all' ? projects : projects.filter((item) => item.category === filter);
-  }, [filter]);
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [filter]);
-
   return (
     <section className="px-6 pb-16 pt-12 text-white sm:px-10 lg:px-16">
       <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-12">
@@ -37,15 +24,20 @@ export function HeroSection() {
         </header>
 
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-          <FilterTabs value={filter} onChange={setFilter} />
+          <PageAnchors
+            items={[
+              { href: '#artists', label: 'Artists' },
+              { href: '#releases', label: 'Releases' },
+              { href: '#contacts', label: 'Contacts' },
+            ]}
+          />
           <SocialLinks />
         </div>
+      </div>
 
-        <ProjectsCarousel
-          projects={filteredProjects}
-          activeIndex={activeIndex}
-          onChange={setActiveIndex}
-        />
+      {/* Full-bleed carousel outside the max-width container */}
+      <div className="mt-10 w-[100vw] translate-x-[-50%] left-1/2 relative overflow-hidden">
+        <ProjectCarousel projects={projects} />
       </div>
     </section>
   );
