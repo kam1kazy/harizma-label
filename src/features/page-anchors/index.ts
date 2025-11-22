@@ -1,2 +1,2 @@
-export * from './model/types';
+export * from './models/types';
 export { PageAnchors } from './ui/anchors';

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import type { PageAnchorsProps } from '../model/types';
+import type { PageAnchorsProps } from '../models/types';
 
 export function PageAnchors({ items, className }: PageAnchorsProps) {
   return (

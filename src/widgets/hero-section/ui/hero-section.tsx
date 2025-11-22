@@ -1,8 +1,6 @@
 'use client';
 
-import { projects } from '@/entities/project';
 import { PageAnchors } from '@/features/page-anchors';
-import { ProjectCarousel } from '@/features/project-carousel';
 import { IconButton } from '@/shared/ui/icon-button';
 import { SocialLinks } from '@/shared/ui/social-links';
 import { FiMenu } from 'react-icons/fi';
@@ -33,11 +31,6 @@ export function HeroSection() {
           />
           <SocialLinks />
         </div>
-      </div>
-
-      {/* Full-bleed carousel outside the max-width container */}
-      <div className="mt-10 w-[100vw] translate-x-[-50%] left-1/2 relative overflow-hidden">
-        <ProjectCarousel projects={projects} />
       </div>
     </section>
   );

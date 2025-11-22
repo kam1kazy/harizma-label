@@ -1,18 +1,11 @@
-import type { Project, ProjectCategory } from './types';
+import type { Slide } from './types';
 
-export const projectCategories: Array<{ value: 'all' | ProjectCategory; label: string }> = [
-  { value: 'all', label: 'All' },
-  { value: 'motion', label: 'Motion' },
-  { value: 'audio', label: 'Audio' },
-  { value: 'design', label: 'Design' },
-];
-
-export const projects: Project[] = [
+export const slides: Slide[] = [
   {
     id: 'neon-dreams',
     title: 'NEON DREAMS',
     category: 'motion',
-    cover: '/promo.jpg',
+    src: 'carousel/promo.jpg',
     artist: 'Emily Moon',
     description:
       'Ночная история, полная неонового света, городского драмы и хрупких мелодий, созданных вручную.',
@@ -21,43 +14,61 @@ export const projects: Project[] = [
     id: 'star-dust',
     title: 'STAR DUST',
     category: 'motion',
-    cover: '/promo.jpg',
+    src: 'carousel/promo2.jpg',
     artist: 'Alex Wills',
     description:
       'Экспедиция в пустыню, где каждая песчинка сверкает, как новый такт электронной симфонии.',
   },
   {
-    id: 'creative-era',
+    id: 'creative-era2',
     title: 'CREATIVE ERA',
     category: 'design',
-    cover: '/promo.jpg',
+    src: 'carousel/promo3.jpg',
     artist: 'Maya Stone',
     description:
       'Серия концептуальных портретов о людях, которые создают будущее визуального искусства.',
   },
   {
-    id: 'creative-era',
+    id: 'creative-era3',
     title: 'CREATIVE ERA',
     category: 'design',
-    cover: '/promo.jpg',
+    src: 'carousel/promo4.jpg',
     artist: 'Maya Stone',
     description:
       'Серия концептуальных портретов о людях, которые создают будущее визуального искусства.',
   },
   {
-    id: 'creative-era',
+    id: 'creative-era4',
     title: 'CREATIVE ERA',
     category: 'design',
-    cover: '/promo.jpg',
+    src: 'carousel/promo5.jpg',
     artist: 'Maya Stone',
     description:
       'Серия концептуальных портретов о людях, которые создают будущее визуального искусства.',
   },
   {
-    id: 'creative-era',
+    id: 'creative-era5',
     title: 'CREATIVE ERA',
     category: 'design',
-    cover: '/promo.jpg',
+    src: 'carousel/promo6.jpg',
+    artist: 'Maya Stone',
+    description:
+      'Серия концептуальных портретов о людях, которые создают будущее визуального искусства.',
+  },
+  {
+    id: 'creative-era6',
+    title: 'CREATIVE ERA',
+    category: 'design',
+    src: 'carousel/promo7.jpg',
+    artist: 'Maya Stone',
+    description:
+      'Серия концептуальных портретов о людях, которые создают будущее визуального искусства.',
+  },
+  {
+    id: 'creative-era7',
+    title: 'CREATIVE ERA',
+    category: 'design',
+    src: 'carousel/promo8.jpg',
     artist: 'Maya Stone',
     description:
       'Серия концептуальных портретов о людях, которые создают будущее визуального искусства.',
