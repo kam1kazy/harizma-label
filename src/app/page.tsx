@@ -1,6 +1,8 @@
 import { HeroSection } from '@/widgets/hero-section';
 import { CurvedSlider } from '@/widgets/curved-slider/curved-slider';
+import { AudioPlayer } from '@/widgets/audio-player';
 import { slides } from '@/entities/carousel';
+import { tracks } from '@/entities/audio';
 
 export default function Home() {
   return (
@@ -15,6 +17,7 @@ export default function Home() {
           direction: -1, // Или 1 для reverse
         }}
       />
+      <AudioPlayer tracks={tracks} />
     </main>
   );
 }
